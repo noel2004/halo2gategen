@@ -140,7 +140,7 @@ macro_rules! customized_circuits_expand {
                         || gate_cell.name.clone(),
                         self.witness[cell[1]],
                         start_offset + cell[2],
-                        || Ok(value)
+                        || value_for_assign!(value)
                     )?;
                     Ok(Limb::new(Some(c), value))
                 } else if cell[0] == 1 { // fix
@@ -148,7 +148,7 @@ macro_rules! customized_circuits_expand {
                         || format!("assign cell"),
                         self.fixed[cell[1]],
                         start_offset + cell[2],
-                        || Ok(value)
+                        || value_for_assign!(value)
                     )?;
                     Ok(Limb::new(Some(c), value))
                 } else { // selector
@@ -230,14 +230,15 @@ mod tests {
     use crate::customized_circuits_expand;
     use crate::table_item;
     use crate::item_count;
-    use crate::utils::GateCell;
-    use crate::utils::Limb;
-    use halo2_proofs::arithmetic::FieldExt;
+    use crate::value_for_assign;
+    use crate::GateCell;
+    use crate::Limb;
     use halo2_proofs::plonk::{
         Fixed, Column, Advice,
         Selector, Expression, VirtualCells,
         Error,
     };
+    use halo2_proofs::arithmetic::FieldExt;
     use halo2_proofs::poly::Rotation;
     use halo2_proofs::circuit::Region;
 

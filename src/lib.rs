@@ -1,5 +1,5 @@
-use halo2_proofs::arithmetic::FieldExt;
 use halo2_proofs::circuit::AssignedCell;
+use halo2_proofs::arithmetic::FieldExt;
 
 #[derive(Clone, Debug)]
 pub struct Limb<F: FieldExt> {
@@ -7,7 +7,7 @@ pub struct Limb<F: FieldExt> {
     pub value: F
 }
 
-impl<F: FieldExt> Limb<F> {
+impl<F:FieldExt> Limb<F> {
     pub fn new(cell: Option<AssignedCell<F, F>>, value: F) -> Self {
         Limb { cell, value }
     }
