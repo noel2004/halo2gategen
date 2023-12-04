@@ -51,7 +51,6 @@ macro_rules! table_item {
     };
 }
 
-
 #[macro_export]
 macro_rules! customized_circuits_expand {
     ($name:ident, $row:expr, $col:expr, $adv:expr, $fix:expr, $sel:expr, $($item:tt)* ) => {
@@ -72,7 +71,7 @@ macro_rules! customized_circuits_expand {
                 }
             }
 
-            pub fn get_expr<F:FieldExt>(&self, meta: &mut VirtualCells<F>, gate_cell: GateCell) -> Expression<F> {
+            pub fn get_expr<F:PrimeField>(&self, meta: &mut VirtualCells<F>, gate_cell: GateCell) -> Expression<F> {
                 let cell = gate_cell.cell;
                 //println!("Assign Cell at {} {} {:?}", start_offset, gate_cell.name, value);
                 if cell[0] == 0 { // advice
@@ -84,7 +83,7 @@ macro_rules! customized_circuits_expand {
                 }
             }
 
-            pub fn get_expr_with_offset<F:FieldExt>(&self, meta: &mut VirtualCells<F>, gate_cell: GateCell, offset: usize) -> Expression<F> {
+            pub fn get_expr_with_offset<F:PrimeField>(&self, meta: &mut VirtualCells<F>, gate_cell: GateCell, offset: usize) -> Expression<F> {
                 let cell = gate_cell.cell;
                 //println!("Assign Cell at {} {} {:?}", start_offset, gate_cell.name, value);
                 if cell[0] == 0 { // advice
@@ -126,7 +125,7 @@ macro_rules! customized_circuits_expand {
                 }
             }
 
-            pub fn assign_cell<F:FieldExt>(
+            pub fn assign_cell<F:PrimeField>(
                 &self,
                 region: &mut Region<F>,
                 start_offset: usize,
@@ -156,7 +155,7 @@ macro_rules! customized_circuits_expand {
                 }
             }
 
-            pub fn bind_cell<F:FieldExt>(
+            pub fn bind_cell<F:PrimeField>(
                 &self,
                 region: &mut Region<F>,
                 start_offset: usize,
@@ -169,7 +168,7 @@ macro_rules! customized_circuits_expand {
             }
 
 
-            pub fn enable_selector<F:FieldExt>(
+            pub fn enable_selector<F:PrimeField>(
                 &self,
                 region: &mut Region<F>,
                 start_offset: usize,
@@ -212,7 +211,6 @@ macro_rules! customized_circuits_expand {
     };
 }
 
-
 #[macro_export]
 /// Define customize circuits with (nb_row, nb_adv, nb_fix, nb_expr)
 /// | adv    | fix    | sel    |
@@ -228,27 +226,26 @@ macro_rules! customized_circuits {
 mod tests {
     use crate::customized_circuits;
     use crate::customized_circuits_expand;
-    use crate::table_item;
     use crate::item_count;
+    use crate::table_item;
     use crate::value_for_assign;
     use crate::GateCell;
     use crate::Limb;
-    use halo2_proofs::plonk::{
-        Fixed, Column, Advice,
-        Selector, Expression, VirtualCells,
-        Error,
-    };
-    use halo2_proofs::arithmetic::FieldExt;
-    use halo2_proofs::poly::Rotation;
     use halo2_proofs::circuit::Region;
+    use halo2_proofs::halo2curves::ff::PrimeField;
+    use halo2_proofs::plonk::{Advice, Column, Error, Expression, Fixed, Selector, VirtualCells};
+    use halo2_proofs::poly::Rotation;
 
-    customized_circuits!(TestConfig, 2, 2, 1, 1,
-        | wc  | b2 | c2 |  d2
-        | w1  | b3 | c3 |  d3
-    );
+    customized_circuits!(TestConfig, 2, 2, 1, 1, |wc| b2
+        | c2
+        | d2
+        | w1
+        | b3
+        | c3
+        | d3);
     #[test]
     fn test_gate_macro() {
-          //let config = TestConfig {};
-          //assert_eq!(r.to_vec(), r1);
+        //let config = TestConfig {};
+        //assert_eq!(r.to_vec(), r1);
     }
 }
